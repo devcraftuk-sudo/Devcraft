@@ -1086,14 +1086,6 @@ ul {
     gap: 1.25rem;
 }
 
-.form-honeypot {
-    position: absolute;
-    left: -10000px;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-}
-
 .form-group {
     text-align: left;
 }

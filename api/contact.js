@@ -42,14 +42,8 @@ export default async function handler(request, response) {
     const {
         email = '',
         projectType = '',
-        objective = '',
-        companyWebsite = ''
+        objective = ''
     } = request.body ?? {};
-
-    // Honeypot: bots commonly complete fields hidden from real visitors.
-    if (companyWebsite) {
-        return response.status(200).json({ success: true });
-    }
 
     const cleanEmail = String(email).trim().toLowerCase();
     const cleanProjectType = String(projectType).trim();
@@ -112,13 +106,15 @@ export default async function handler(request, response) {
             })
         });
 
+        const resendResult = await resendResponse.json();
+
         if (!resendResponse.ok) {
-            const resendError = await resendResponse.text();
+            const resendError = JSON.stringify(resendResult);
             console.error('Resend request failed:', resendResponse.status, resendError);
             return response.status(502).json({ error: 'The message could not be sent.' });
         }
 
-        return response.status(200).json({ success: true });
+        return response.status(200).json({ success: true, id: resendResult.id });
     } catch (error) {
         console.error('Contact email failed:', error);
         return response.status(500).json({ error: 'The message could not be sent.' });

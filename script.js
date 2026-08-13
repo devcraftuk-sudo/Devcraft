@@ -59,8 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify({
                         email: formData.get('email'),
                         projectType: formData.get('project-type'),
-                        objective: formData.get('objective'),
-                        companyWebsite: formData.get('companyWebsite')
+                        objective: formData.get('objective')
                     })
                 });
 
