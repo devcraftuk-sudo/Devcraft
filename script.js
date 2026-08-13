@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 contactForm.reset();
                 status.classList.add('success');
                 status.textContent = 'Thank you. Your message has been sent successfully.';
+                window.location.assign('thank-you.html');
             } catch (error) {
                 status.classList.add('error');
                 status.textContent = error.message;
