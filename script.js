@@ -3,9 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const navToggle = document.querySelector('.nav-toggle');
     const navLinks = document.querySelector('.nav-links');
     const track = document.querySelector('.slider-track');
-    const prevBtn = document.querySelector('.slider-prev');
-    const nextBtn = document.querySelector('.slider-next');
-    const dotsContainer = document.querySelector('.slider-dots');
     const cards = document.querySelectorAll('.factor-card');
     const contactForm = document.querySelector('.contact-form');
 
@@ -38,12 +35,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Contact form placeholder
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = contactForm.querySelector('#email').value;
-        const projectSummary = contactForm.querySelector('#project-type').value;
-        alert(`Thanks! We'll reach out to ${email} soon about ${projectSummary}.`);
-        contactForm.reset();
-    });
+    // Send contact enquiries through the Vercel API.
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            const status = contactForm.querySelector('.form-status');
+            const formData = new FormData(contactForm);
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Sending...';
+            status.className = 'form-status';
+            status.textContent = '';
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: formData.get('email'),
+                        projectType: formData.get('project-type'),
+                        objective: formData.get('objective'),
+                        companyWebsite: formData.get('companyWebsite')
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Your message could not be sent.');
+                }
+
+                contactForm.reset();
+                status.classList.add('success');
+                status.textContent = 'Thank you. Your message has been sent successfully.';
+            } catch (error) {
+                status.classList.add('error');
+                status.textContent = error.message;
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Send message';
+            }
+        });
+    }
 });

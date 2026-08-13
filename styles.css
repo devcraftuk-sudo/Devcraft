@@ -1086,6 +1086,14 @@ ul {
     gap: 1.25rem;
 }
 
+.form-honeypot {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
 .form-group {
     text-align: left;
 }
@@ -1165,6 +1173,27 @@ ul {
 
 .contact-form .btn {
     align-self: center;
+}
+
+.contact-form .btn:disabled {
+    cursor: wait;
+    opacity: 0.65;
+    transform: none;
+}
+
+.form-status {
+    min-height: 1.5em;
+    margin: 0;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.form-status.success {
+    color: #7fffc2;
+}
+
+.form-status.error {
+    color: #ff8f9c;
 }
 
 /* ── Footer ── */
