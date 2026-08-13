@@ -50,7 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
             status.textContent = '';
 
             try {
-                const response = await fetch('/api/contact', {
+                const contactEndpoint = window.location.hostname === 'devcraftuk.co.uk'
+                    ? 'https://www.devcraftuk.co.uk/api/contact'
+                    : '/api/contact';
+                const response = await fetch(contactEndpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

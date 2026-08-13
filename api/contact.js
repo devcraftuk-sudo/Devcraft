@@ -17,6 +17,23 @@ function escapeHtml(value) {
 }
 
 export default async function handler(request, response) {
+    const allowedOrigins = new Set([
+        'https://devcraftuk.co.uk',
+        'https://www.devcraftuk.co.uk'
+    ]);
+    const requestOrigin = request.headers.origin;
+
+    if (allowedOrigins.has(requestOrigin)) {
+        response.setHeader('Access-Control-Allow-Origin', requestOrigin);
+        response.setHeader('Vary', 'Origin');
+        response.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    }
+
+    if (request.method === 'OPTIONS') {
+        return response.status(204).end();
+    }
+
     if (request.method !== 'POST') {
         response.setHeader('Allow', 'POST');
         return response.status(405).json({ error: 'Method not allowed.' });
