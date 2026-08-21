@@ -1,0 +1,27 @@
+{
+  "name": "websitesuk",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://devcraftuk-sudo@github.com/devcraftuk-sudo/Devcraft.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devcraftuk-sudo/Devcraft/issues"
+  },
+  "homepage": "https://github.com/devcraftuk-sudo/Devcraft#readme",
+  "dependencies": {
+    "next": "^16.3.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  }
+}

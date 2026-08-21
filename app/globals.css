@@ -1,0 +1,39 @@
+@import "../styles.css";
+
+/* Next.js-specific compatibility for optimized fill images. */
+.business-image {
+    position: relative;
+}
+
+.business-image img {
+    object-fit: cover;
+    object-position: top center;
+}
+
+.thank-you-page > .rise-3d-fx {
+    z-index: 0;
+}
+
+.thank-you-page {
+    isolation: isolate;
+}
+
+.thank-you-header,
+.thank-you-main,
+.thank-you-footer {
+    position: relative;
+    z-index: 1;
+}
+
+.thank-you-card {
+    position: relative;
+    z-index: 2;
+    isolation: isolate;
+}
+
+.thank-you-card .confirmation-message,
+.thank-you-card .response-promise,
+.thank-you-card .btn {
+    position: relative;
+    z-index: 3;
+}

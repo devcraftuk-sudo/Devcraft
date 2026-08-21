@@ -7,6 +7,11 @@ const ALLOWED_PROJECT_TYPES = new Set([
     'Other'
 ]);
 
+const ALLOWED_ORIGINS = new Set([
+    'https://devcraftuk.co.uk',
+    'https://www.devcraftuk.co.uk'
+]);
+
 function escapeHtml(value) {
     return value
         .replaceAll('&', '&amp;')
@@ -16,61 +21,69 @@ function escapeHtml(value) {
         .replaceAll("'", '&#039;');
 }
 
-export default async function handler(request, response) {
-    const allowedOrigins = new Set([
-        'https://devcraftuk.co.uk',
-        'https://www.devcraftuk.co.uk'
-    ]);
-    const requestOrigin = request.headers.origin;
+function corsHeaders(request) {
+    const origin = request.headers.get('origin');
 
-    if (allowedOrigins.has(requestOrigin)) {
-        response.setHeader('Access-Control-Allow-Origin', requestOrigin);
-        response.setHeader('Vary', 'Origin');
-        response.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-        response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (!ALLOWED_ORIGINS.has(origin)) {
+        return {};
     }
 
-    if (request.method === 'OPTIONS') {
-        return response.status(204).end();
+    return {
+        'Access-Control-Allow-Origin': origin,
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Vary': 'Origin'
+    };
+}
+
+function json(data, status, headers = {}) {
+    return Response.json(data, { status, headers });
+}
+
+export async function OPTIONS(request) {
+    return new Response(null, {
+        status: 204,
+        headers: corsHeaders(request)
+    });
+}
+
+export async function POST(request) {
+    const headers = corsHeaders(request);
+    let body;
+
+    try {
+        body = await request.json();
+    } catch {
+        return json({ error: 'Invalid request body.' }, 400, headers);
     }
 
-    if (request.method !== 'POST') {
-        response.setHeader('Allow', 'POST');
-        return response.status(405).json({ error: 'Method not allowed.' });
-    }
-
-    const {
-        email = '',
-        projectType = '',
-        objective = ''
-    } = request.body ?? {};
-
-    const cleanEmail = String(email).trim().toLowerCase();
-    const cleanProjectType = String(projectType).trim();
-    const cleanObjective = String(objective).trim();
+    const cleanEmail = String(body.email ?? '').trim().toLowerCase();
+    const cleanProjectType = String(body.projectType ?? '').trim();
+    const cleanObjective = String(body.objective ?? '').trim();
     const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail);
 
     if (!emailIsValid) {
-        return response.status(400).json({ error: 'Please enter a valid email address.' });
+        return json({ error: 'Please enter a valid email address.' }, 400, headers);
     }
 
     if (!ALLOWED_PROJECT_TYPES.has(cleanProjectType)) {
-        return response.status(400).json({ error: 'Please choose a valid project type.' });
+        return json({ error: 'Please choose a valid project type.' }, 400, headers);
     }
 
     if (cleanObjective.length < 10 || cleanObjective.length > 3000) {
-        return response.status(400).json({
+        return json({
             error: 'Please describe your objective using between 10 and 3,000 characters.'
-        });
+        }, 400, headers);
     }
 
     const apiKey = process.env.RESEND_API_KEY;
     const recipient = process.env.CONTACT_TO_EMAIL;
-    const sender = process.env.CONTACT_FROM_EMAIL || 'DEVcraft Website <onboarding@resend.dev>';
+    const sender = process.env.CONTACT_FROM_EMAIL
+        || 'DEVcraft Website <onboarding@resend.dev>';
 
     if (!apiKey || !recipient) {
         console.error('Missing RESEND_API_KEY or CONTACT_TO_EMAIL.');
-        return response.status(500).json({ error: 'Email service is not configured yet.' });
+        return json({ error: 'Email service is not configured yet.' }, 500, headers);
     }
 
     const safeEmail = escapeHtml(cleanEmail);
@@ -105,18 +118,20 @@ export default async function handler(request, response) {
                 `
             })
         });
-
         const resendResult = await resendResponse.json();
 
         if (!resendResponse.ok) {
-            const resendError = JSON.stringify(resendResult);
-            console.error('Resend request failed:', resendResponse.status, resendError);
-            return response.status(502).json({ error: 'The message could not be sent.' });
+            console.error(
+                'Resend request failed:',
+                resendResponse.status,
+                JSON.stringify(resendResult)
+            );
+            return json({ error: 'The message could not be sent.' }, 502, headers);
         }
 
-        return response.status(200).json({ success: true, id: resendResult.id });
+        return json({ success: true, id: resendResult.id }, 200, headers);
     } catch (error) {
         console.error('Contact email failed:', error);
-        return response.status(500).json({ error: 'The message could not be sent.' });
+        return json({ error: 'The message could not be sent.' }, 500, headers);
     }
 }
