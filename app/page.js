@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import Header from '../components/Header';
 import RisingBackground from '../components/RisingBackground';
 import ServicesCarousel from '../components/ServicesCarousel';
+import WhatsAppContact from '../components/WhatsAppContact';
 import {
     benefits,
     maintenanceItems,
@@ -29,9 +30,7 @@ export default function HomePage() {
                     <div className="hero-actions">
                         <Link href="/#contact" className="btn btn-primary">Get a Free Quote</Link>
                         <span className="hero-or">or</span>
-                        <Link href="/#contact" className="btn btn-secondary">
-                            Talk to a Specialist Now!
-                        </Link>
+                        <WhatsAppContact />
                     </div>
                 </div>
             </header>
