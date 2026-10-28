@@ -4,6 +4,7 @@ const ALLOWED_PROJECT_TYPES = new Set([
     'App',
     'Blog',
     'Landing Pages',
+    'Not sure yet',
     'Other'
 ]);
 

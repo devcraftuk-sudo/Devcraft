@@ -3,6 +3,16 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
+const projectTypes = [
+    'Website',
+    'System',
+    'App',
+    'Blog',
+    'Landing Pages',
+    'Not sure yet',
+    'Other'
+];
+
 export default function ContactForm() {
     const router = useRouter();
     const [status, setStatus] = useState({ type: '', message: '' });
@@ -40,22 +50,24 @@ export default function ContactForm() {
                 type: 'error',
                 message: error instanceof Error
                     ? error.message
-                    : 'Your message could not be sent.'
+                    : 'Your message could not be sent. Please try again, or use WhatsApp instead.'
             });
             setSubmitting(false);
         }
     }
 
     return (
-        <form className="contact-form" onSubmit={handleSubmit}>
+        <form className="contact-form" onSubmit={handleSubmit} noValidate={false}>
             <div className="form-group">
                 <label htmlFor="email">Your email</label>
                 <input
                     type="email"
                     id="email"
                     name="email"
+                    autoComplete="email"
                     placeholder="you@company.com"
                     required
+                    aria-invalid={status.type === 'error' ? 'true' : undefined}
                 />
             </div>
             <div className="form-group">
@@ -63,26 +75,21 @@ export default function ContactForm() {
                 <div className="select-wrapper">
                     <select id="project-type" name="project-type" defaultValue="" required>
                         <option value="" disabled>Choose a project type</option>
-                        <option value="Website">Website</option>
-                        <option value="System">System</option>
-                        <option value="App">App</option>
-                        <option value="Blog">Blog</option>
-                        <option value="Landing Pages">Landing Pages</option>
-                        <option value="Other">Other</option>
+                        {projectTypes.map(type => (
+                            <option value={type} key={type}>{type}</option>
+                        ))}
                     </select>
                 </div>
             </div>
             <div className="form-group">
-                <label htmlFor="objective">
-                    Tell us a bit about your objective with online platforming
-                </label>
+                <label htmlFor="objective">What would you like help with?</label>
                 <textarea
                     id="objective"
                     name="objective"
                     rows="5"
                     minLength="10"
                     maxLength="3000"
-                    placeholder="What do you want this platform to help your business achieve?"
+                    placeholder="A sentence or two about the website, system or support you need is enough to start."
                     required
                 />
             </div>

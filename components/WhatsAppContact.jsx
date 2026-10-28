@@ -30,7 +30,7 @@ I would like to discuss my project and receive a quotation.
 Please let me know what information you need from me. Thank you!`;
 }
 
-export default function WhatsAppContact() {
+export default function WhatsAppContact({ variant = 'button' }) {
     const [open, setOpen] = useState(false);
     const [selectedService, setSelectedService] = useState('');
     const dialogRef = useRef(null);
@@ -92,19 +92,35 @@ export default function WhatsAppContact() {
         closeModal();
     }
 
+    const trigger = variant === 'link' ? (
+        <button
+            type="button"
+            className="whatsapp-text-link"
+            aria-haspopup="dialog"
+            aria-expanded={open}
+            aria-controls={dialogId}
+            onClick={() => setOpen(true)}
+        >
+            <WhatsAppIcon size={16} />
+            Chat on WhatsApp
+        </button>
+    ) : (
+        <button
+            type="button"
+            className="btn btn-secondary whatsapp-trigger"
+            aria-haspopup="dialog"
+            aria-expanded={open}
+            aria-controls={dialogId}
+            onClick={() => setOpen(true)}
+        >
+            <WhatsAppIcon />
+            Chat on WhatsApp
+        </button>
+    );
+
     return (
         <>
-            <button
-                type="button"
-                className="btn btn-secondary whatsapp-trigger"
-                aria-haspopup="dialog"
-                aria-expanded={open}
-                aria-controls={dialogId}
-                onClick={() => setOpen(true)}
-            >
-                <WhatsAppIcon />
-                Talk to a Specialist Now!
-            </button>
+            {trigger}
 
             <dialog
                 ref={dialogRef}
@@ -125,7 +141,7 @@ export default function WhatsAppContact() {
                     </button>
 
                     <h2 id={titleId} ref={titleRef} tabIndex={-1}>
-                        What service are you interested in?
+                        What would you like to talk about?
                     </h2>
 
                     <form
@@ -164,8 +180,8 @@ export default function WhatsAppContact() {
 
                         <p id={hintId} className="whatsapp-modal-hint" aria-live="polite">
                             {selectedService
-                                ? 'You can continue to WhatsApp with this service selected.'
-                                : 'Please select a service to continue.'}
+                                ? 'You can continue to WhatsApp with this selected.'
+                                : 'Please choose a topic to continue.'}
                         </p>
 
                         <button

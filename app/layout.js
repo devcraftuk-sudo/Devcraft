@@ -1,4 +1,13 @@
+import { Plus_Jakarta_Sans } from 'next/font/google';
+import MotionRoot from '../components/MotionRoot';
 import './globals.css';
+
+const plusJakarta = Plus_Jakarta_Sans({
+    subsets: ['latin'],
+    display: 'swap',
+    weight: ['400', '500', '600', '700'],
+    variable: '--font-sans'
+});
 
 export const metadata = {
     title: {
@@ -10,8 +19,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en">
-            <body>{children}</body>
+        <html lang="en-GB" className={plusJakarta.variable}>
+            <body className={plusJakarta.className}>
+                <MotionRoot />
+                {children}
+            </body>
         </html>
     );
 }

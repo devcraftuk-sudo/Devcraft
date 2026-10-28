@@ -1,9 +1,8 @@
-import Link from 'next/link';
+import NavLink from './NavLink';
 
 const footerLinks = [
-    { href: '/#products', label: 'Products' },
-    { href: '/#improve', label: 'Benefits' },
-    { href: '/#factors', label: 'Services' },
+    { href: '/#work', label: 'Work' },
+    { href: '/#services', label: 'Services' },
     { href: '/#process', label: 'Process' },
     { href: '/#seo', label: 'SEO' },
     { href: '/#maintenance', label: 'Maintenance' },
@@ -12,23 +11,23 @@ const footerLinks = [
 
 export default function Footer({ compact = false }) {
     const links = compact
-        ? footerLinks.filter(link => link.label !== 'Benefits' && link.label !== 'Maintenance')
+        ? footerLinks.filter(link => link.label !== 'Maintenance' && link.label !== 'SEO')
         : footerLinks;
 
     return (
         <footer className={`footer${compact ? ' thank-you-footer' : ''}`}>
             <div className="container footer-inner">
                 <div className="footer-brand">
-                    <Link href="/#home" className="logo">
+                    <NavLink href="/#home" className="logo">
                         DEV<span>craft</span>
-                    </Link>
-                    <p>Crafting digital experiences that matter.</p>
+                    </NavLink>
+                    <p>Websites and digital tools, built with care.</p>
                 </div>
                 <div className="footer-links">
                     {links.map(link => (
-                        <Link href={link.href} key={link.href}>
+                        <NavLink href={link.href} key={link.href}>
                             {link.label}
-                        </Link>
+                        </NavLink>
                     ))}
                 </div>
                 <p className="footer-copy">&copy; 2026 DEVcraft. All rights reserved.</p>
